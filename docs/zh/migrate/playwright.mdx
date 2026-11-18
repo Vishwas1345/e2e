@@ -166,7 +166,7 @@ test('checkout', async ({ app, agent, screen }) => {
 | `test.setTimeout()` | 在测试体、`beforeEach` 或 `beforeAll`（该钩子自身的超时）中相同；`afterEach` 和 `afterAll` 不能调用。在 `describe` 回调中，请改为向 `test.describe` 传入 `{ timeout }`。没有表示不限时的 `0`：请传入一个较大的值 |
 | `beforeEach`, `afterEach`, `beforeAll`, `afterAll` | 相同，但不带标题；`beforeAll` 和 `afterAll` 得到工作进程测试夹具，而不是 `browser`、`app` 或 `screen` |
 | `test.describe.skip`, `test.describe.serial`, `describe.configure({ mode: 'serial', retries, timeout })` | `test.describe(title, { skip, serial, retries, timeout }, fn)` |
-| `test.fail()` on a describe | `test.describe.fail(title, fn)`, or `{ fail: 'reason' }` on the group |
+| describe 上的 `test.fail()` | `test.describe.fail(title, fn)`，或在分组上设置 `{ fail: 'reason' }`；按条件标记则在 `beforeEach` 中调用 `test.fail(condition, 'reason')` |
 | `{ tag: '@smoke' }` | 测试或组上的 `{ tags: ['smoke'] }` |
 | `test.extend({ fixture })` | 结构相同，按需准备：测试、钩子或测试夹具会得到它在第一个参数中列出的测试夹具 |
 | `[fn, { scope: 'worker' }]` 测试夹具 | 相同，用 `extend` 的第二个类型参数提供类型 |

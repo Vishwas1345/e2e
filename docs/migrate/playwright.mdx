@@ -177,7 +177,7 @@ run only in a browser, so a test that uses it declares
 | `test.setTimeout()` | the same inside a test body, `beforeEach`, or `beforeAll` (that hook's own timeout); `afterEach` and `afterAll` cannot call it. In a `describe` callback, pass `{ timeout }` to `test.describe` instead. There is no `0` for no timeout: pass a large value |
 | `beforeEach`, `afterEach`, `beforeAll`, `afterAll` | the same, with no title; `beforeAll` and `afterAll` get worker fixtures, not `browser`, `app`, or `screen` |
 | `test.describe.skip`, `test.describe.serial`, `describe.configure({ mode: 'serial', retries, timeout })` | `test.describe(title, { skip, serial, retries, timeout }, fn)` |
-| `test.fail()` on a describe | `test.describe.fail(title, fn)`, or `{ fail: 'reason' }` on the group |
+| `test.fail()` on a describe | `test.describe.fail(title, fn)`, or `{ fail: 'reason' }` on the group; for a condition, `test.fail(condition, 'reason')` in a `beforeEach` |
 | `{ tag: '@smoke' }` | `{ tags: ['smoke'] }` on a test or group |
 | `test.extend({ fixture })` | the same shape, set up on demand: a test, a hook, or a fixture gets the fixtures it names in its first parameter |
 | `[fn, { scope: 'worker' }]` fixtures | the same, typed with the second type argument of `extend` |

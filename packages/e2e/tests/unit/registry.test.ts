@@ -532,6 +532,7 @@ describe('registration', () => {
   it('rejects test.fail(condition) outside a test body', async () => {
     expect(() => test.fail(true, 'not here')).toThrow(CollectionError);
     expect(() => test.fail(false)).toThrow(/must be called inside a test body/);
+    expect(() => test.fail(false)).toThrow(/describe\.fail\(title, fn\).*test or describe option/);
   });
 
   it('validates titles', async () => {

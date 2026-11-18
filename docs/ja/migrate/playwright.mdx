@@ -166,7 +166,7 @@ test('checkout', async ({ app, agent, screen }) => {
 | `test.setTimeout()` | テスト本体、`beforeEach`、`beforeAll`（そのフック自身のタイムアウト）では同じ。`afterEach` と `afterAll` からは呼び出せません。`describe` のコールバック内では、代わりに `test.describe` に `{ timeout }` を渡します。タイムアウトなしを意味する `0` はないため、大きな値を渡します |
 | `beforeEach`, `afterEach`, `beforeAll`, `afterAll` | 同じ。ただしタイトルなし。`beforeAll` と `afterAll` が受け取るのはワーカーフィクスチャで、`browser`、`app`、`screen` は受け取らない |
 | `test.describe.skip`, `test.describe.serial`, `describe.configure({ mode: 'serial', retries, timeout })` | `test.describe(title, { skip, serial, retries, timeout }, fn)` |
-| `test.fail()` on a describe | `test.describe.fail(title, fn)`, or `{ fail: 'reason' }` on the group |
+| describe に対する `test.fail()` | `test.describe.fail(title, fn)`、またはグループの `{ fail: 'reason' }`。条件付きなら `beforeEach` 内で `test.fail(condition, 'reason')` |
 | `{ tag: '@smoke' }` | テストまたはグループの `{ tags: ['smoke'] }` |
 | `test.extend({ fixture })` | 同じ形式で、必要に応じてセットアップ。テスト、フック、フィクスチャは、最初の引数で指定したフィクスチャを受け取る |
 | `[fn, { scope: 'worker' }]` のフィクスチャ | 同じ。`extend` の 2 番目の型引数で型を指定 |

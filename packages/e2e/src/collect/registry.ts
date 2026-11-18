@@ -21,6 +21,7 @@ import { checkDeclaredFixtures, describeFixture, describeUser } from './fixture-
 import type {
   DescribeAPI,
   DescribeOptions,
+  DescribeRegistrar,
   EachFn,
   EachRegistrar,
   FixtureFn,
@@ -828,7 +829,7 @@ function createTestAPI(chain: readonly FixtureDefinition[]): TestAPI {
   };
 
   /** The `describe()` call forms; `describe.fail` marks the group as if it had `fail: true`, so it takes no `fail` of its own. */
-  const groupRegistrar = (api: string, fail: boolean) => <Result>(
+  const groupRegistrar = (api: string, fail: boolean): DescribeRegistrar => <Result>(
     title: string,
     optionsOrBody: DescribeOptions | (() => Result),
     maybeBody?: () => Result,
@@ -844,9 +845,9 @@ function createTestAPI(chain: readonly FixtureDefinition[]): TestAPI {
     }
     collector.registerDescribe(title, marks ? { ...given, fail: true } : given, body, api);
   };
-  const describe = Object.assign(groupRegistrar('describe()', false), {
+  const describe: DescribeAPI = Object.assign(groupRegistrar('describe()', false), {
     fail: groupRegistrar('describe.fail()', true),
-  }) as DescribeAPI;
+  });
 
   const api: TestAPI = Object.assign(testFunction, {
     skip(first?: string | boolean, second?: TestBody | string): TestCase | undefined {
