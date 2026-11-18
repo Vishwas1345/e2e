@@ -683,7 +683,7 @@ test.for([1])('no body');
 test.each([[1, 'one']])('%i', async (_n, { app }) => { void app; });
 // @ts-expect-error test.for passes the row whole, not spread
 test.for([[1, 'one']])('%i', async (n: number) => { void n; });
-// fail takes the same three shapes and returns nothing inside a body; describe and setup take no fail option.
+// fail takes the same three shapes and returns nothing inside a body; a group takes it as an option or describe.fail, setup never.
 test.fail(true, 'known gap');
 test.fail('known gap');
 test.setTimeout(60_000);
@@ -692,8 +692,15 @@ test.setTimeout('60s');
 test.fail('gap', async () => {}) satisfies ReturnType<typeof test>;
 void (test.fail(false) satisfies void);
 test('gap', { fail: 'known gap' }, async () => {});
-// @ts-expect-error a group cannot expect failure; mark each test
-test.describe('gaps', { fail: true }, () => {});
+test.describe('gaps', { fail: 'legacy checkout' }, () => {});
+void (test.describe.fail('gaps', () => {}) satisfies void);
+describe.fail('gaps', { tags: ['legacy'] }, () => {});
+// @ts-expect-error describe.fail is already marked; a reason goes in describe's fail option
+describe.fail('gaps', { fail: 'legacy checkout' }, () => {});
+// @ts-expect-error describe.fail registration must be synchronous
+test.describe.fail('asynchronous', async () => {});
+// @ts-expect-error a group cannot be focused; describe options take no only
+test.describe.fail('gaps', { only: true }, () => {});
 void screen.getByLabel('Plan').selectOption({ value: 'pro' });
 // @ts-expect-error one of label, value, or index, never two
 void screen.getByLabel('Plan').selectOption({ value: 'pro', index: 1 });
