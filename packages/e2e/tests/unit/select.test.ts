@@ -268,6 +268,7 @@ describe('resolveOptions', () => {
         test('blank reason keeps the group reason', { fail: ' ' }, noop);
         test.describe.fail('inner bare', () => test('nested', noop));
         test.describe('inner false', { fail: false }, () => test('still marked', noop));
+        test.describe('inner reason', { fail: 'coupon API' }, () => test('nested reason', noop));
       });
       test.describe.fail('no reason', () => test('default', noop));
       test.describe('plain', () => test('unmarked', noop));
@@ -280,6 +281,7 @@ describe('resolveOptions', () => {
       'legacy checkout',
       'legacy checkout',
       'legacy checkout',
+      'coupon API',
       'expected to fail',
       undefined,
     ]);
