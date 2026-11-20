@@ -542,7 +542,7 @@ test('exports a PDF', { skip: 'PDF export is off on staging' }, async ({ app }) 
 
 #### `fail`
 
-テストの失敗を期待します。[`test.fail`](#test-fail) を参照してください。文字列は理由になります。 A layer with `true` or any string marks, and the innermost reason wins. Not allowed on or inside a serial group.
+テストの失敗を期待します。[`test.fail`](#test-fail) を参照してください。文字列は理由になります。 A layer with `true` or any string marks, and the innermost reason wins. Not allowed on, inside, or around a serial group.
 
 ```ts
 test('exports a PDF', { fail: 'PDF export is broken' }, async ({ app }) => {});
@@ -1024,8 +1024,8 @@ export interface TestOptions {
   /**
    * Expects the test to fail; a string is the reason. A test failure then
    * passes it, and a pass fails it with `UNEXPECTED_PASS`. A layer with `true`
-   * or any string marks; the innermost reason wins. Not allowed on or inside a
-   * serial group.
+   * or any string marks; the innermost reason wins. Not allowed on, inside, or
+   * around a serial group.
    */
   fail?: boolean | string;
   /** Focuses the test locally. CI rejects it with `ONLY_IN_CI`. */
