@@ -508,6 +508,12 @@ describe('registration', () => {
     await expect(collectModule(async () => test.describe('group', { fail: 1 } as never, () => {}))).rejects.toThrow(
       'describe options: fail must be true, false, or a reason string, got 1',
     );
+    // describe.fail rejects what describe() rejects, including keys a spread would drop.
+    const hidden = Object.defineProperty({}, 'bogus', { value: 1, enumerable: false });
+    for (const [options, message] of [[[], 'unknown key "length"'], [hidden, 'unknown key "bogus"']] as const) {
+      await expect(collectModule(async () => test.describe('group', options as never, () => {}))).rejects.toThrow(message);
+      await expect(collectModule(async () => test.describe.fail('group', options as never, () => {}))).rejects.toThrow(message);
+    }
     for (const fail of ['legacy checkout', false, 1]) {
       await expect(collectModule(async () => test.describe.fail('group', { fail } as never, () => {}))).rejects.toThrow(
         "describe.fail() takes no fail option; give a reason with describe(title, { fail: 'reason' }, fn)",
@@ -518,6 +524,7 @@ describe('registration', () => {
   it('refuses fail on, inside, or around a serial group', async () => {
     const serialRule = 'describe option "fail" cannot be set on or inside a serial group, which runs as one unit';
     await expect(collectModule(async () => test.describe('unit', { serial: true, fail: true }, () => {}))).rejects.toThrow(serialRule);
+    await expect(collectModule(async () => test.describe.fail('unit', { serial: true }, () => {}))).rejects.toThrow(serialRule);
     await expect(
       collectModule(async () => test.describe('unit', { serial: true }, () => test.describe.fail('inner', () => {}))),
     ).rejects.toThrow(serialRule);

@@ -255,11 +255,16 @@ class Collector {
     return Object.freeze({ [testCaseBrand]: true as const });
   }
 
-  registerDescribe(title: string, options: DescribeOptions, body: () => unknown, api = 'describe()'): void {
+  registerDescribe(title: string, options: DescribeOptions, body: () => unknown, api = 'describe()', markFail = false): void {
     this.assertOpen(api);
     const normalizedTitle = this.title(title);
     if (typeof body !== 'function') throw new CollectionError('describe body must be a function');
     validateDescribeOptions(options, this.currentGroup);
+    // The caller's own options are checked first: the copy that adds the mark keeps only enumerable keys.
+    if (markFail) {
+      options = { ...options, fail: true };
+      validateDescribeOptions(options, this.currentGroup);
+    }
     const group: GroupNode = {
       title: normalizedTitle,
       options,
@@ -843,7 +848,7 @@ function createTestAPI(chain: readonly FixtureDefinition[]): TestAPI {
     if (marks && given.fail !== undefined) {
       throw new CollectionError(`${api} takes no fail option; give a reason with describe(title, { fail: 'reason' }, fn)`);
     }
-    collector.registerDescribe(title, marks ? { ...given, fail: true } : given, body, api);
+    collector.registerDescribe(title, given, body, api, marks);
   };
   const describe: DescribeAPI = Object.assign(groupRegistrar('describe()', false), {
     fail: groupRegistrar('describe.fail()', true),

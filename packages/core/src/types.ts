@@ -755,8 +755,9 @@ export interface TestOptions {
   skip?: boolean | string;
   /**
    * Expects the test to fail; a string is the reason. A test failure then
-   * passes it, and a pass fails it with `UNEXPECTED_PASS`. Any truthy layer
-   * marks; the innermost reason wins. Not allowed on or inside a serial group.
+   * passes it, and a pass fails it with `UNEXPECTED_PASS`. A layer with `true`
+   * or any string marks; the innermost reason wins. Not allowed on or inside a
+   * serial group.
    */
   fail?: boolean | string;
   /** Focuses the test locally. CI rejects it with `ONLY_IN_CI`. */
