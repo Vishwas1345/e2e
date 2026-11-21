@@ -255,16 +255,13 @@ class Collector {
     return Object.freeze({ [testCaseBrand]: true as const });
   }
 
-  registerDescribe(title: string, options: DescribeOptions, body: () => unknown, api = 'describe()', markFail = false): void {
+  registerDescribe(title: string, given: DescribeOptions, body: () => unknown, api: string, markFail: boolean): void {
     this.assertOpen(api);
     const normalizedTitle = this.title(title);
     if (typeof body !== 'function') throw new CollectionError('describe body must be a function');
-    validateDescribeOptions(options, this.currentGroup);
-    // The caller's own options are checked first: the copy that adds the mark keeps only enumerable keys.
-    if (markFail) {
-      options = { ...options, fail: true };
-      validateDescribeOptions(options, this.currentGroup);
-    }
+    // The caller's own options are checked, not the copy that adds the mark, which keeps only enumerable keys.
+    validateDescribeOptions(given, this.currentGroup, markFail);
+    const options = markFail ? { ...given, fail: true } : given;
     const group: GroupNode = {
       title: normalizedTitle,
       options,
@@ -540,14 +537,14 @@ function validateFailOption(fail: unknown, label: string): void {
   }
 }
 
-function validateDescribeOptions(options: DescribeOptions, parent: GroupNode | undefined): void {
+function validateDescribeOptions(options: DescribeOptions, parent: GroupNode | undefined, markFail: boolean): void {
   validateCommonOptions(options, 'describe options', DESCRIBE_OPTION_KEYS);
   validateFailOption(options.fail, 'describe options');
   if (options.serial === true && insideSerial(parent)) {
     throw new CollectionError('nested serial groups are collection errors');
   }
   // A serial group's members cannot be marked expected to fail, so neither can the group.
-  if (options.fail !== undefined && (options.serial === true || insideSerial(parent))) {
+  if ((markFail || options.fail !== undefined) && (options.serial === true || insideSerial(parent))) {
     throw new CollectionError('describe option "fail" cannot be set on or inside a serial group, which runs as one unit');
   }
   if (options.serial === true && groupChain(parent).some((group) => expectedFailureOption(group.options.fail) !== undefined)) {
